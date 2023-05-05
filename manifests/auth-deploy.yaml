@@ -1,0 +1,78 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: auth-configmap
+  namespace: auth-app
+data:
+  pg-host: users-test-db-service.test-db
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: auth-secret
+  namespace: auth-app
+stringData:
+  pg-password: thepass123
+  jwt-secret: eb9fdf01e4f1b556cde951d1ac4e5ad3dd519bc6f0ed67f8fb8a54e757144b1d
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-app
+  namespace: auth-app
+  labels:
+    app: auth-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: auth-app
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 3
+  template:
+    metadata:
+      labels:
+        app: auth-app
+    spec:
+      containers:
+        - name: auth-app
+          image: ghcr.io/micha-aucoin/auth-app:latest
+          resources:
+            limits:
+              cpu: "1"
+              memory: "1Gi"
+          ports:
+            - containerPort: 80
+          env:
+            - name: PG_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: auth-configmap
+                  key: pg-host
+            - name: PG_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: auth-secret
+                  key: pg-password
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: auth-secret
+                  key: jwt-secret
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-app
+  namespace: auth-app
+spec:
+  selector:
+    app: auth-app
+  type: ClusterIP
+  ports:
+    - port: 8080
+      targetPort: 80
+      protocol: TCP
