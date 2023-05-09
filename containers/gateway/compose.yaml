@@ -1,0 +1,9 @@
+services:
+  gateway:
+    build: .
+    image: gateway
+    container_name: gateway
+    env_file:
+      - env/example.env
+    ports:
+      - "8000:80"

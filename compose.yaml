@@ -1,0 +1,48 @@
+services:
+  auth-app:
+    build: containers/auth-app
+    image: auth-app
+    container_name: auth-app
+    env_file:
+      - containers/auth-app/env/example.env
+    ports:
+      - "8080:80"
+    networks:
+      - users-net
+    depends_on:
+      users-pg:
+        condition: service_healthy
+
+  gateway:
+    build: containers/gateway
+    image: gateway
+    container_name: gateway
+    env_file:
+      - containers/gateway/env/example.env
+    ports:
+      - "8000:80"
+    networks:
+      - users-net
+    depends_on:
+      - auth-app
+
+  users-pg:
+    image: bitnami/postgresql:13
+    container_name: users-pg
+    environment:
+      - POSTGRESQL_USERNAME=admin
+      - POSTGRESQL_PASSWORD=thepass123
+      - POSTGRESQL_DATABASE=users_db
+    ports:
+      - "5432:5432"
+    networks:
+      - users-net
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U admin -d users_db" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  users-net:
+    name: users-net

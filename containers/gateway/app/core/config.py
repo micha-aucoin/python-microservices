@@ -9,5 +9,5 @@ class Settings(BaseSettings):
     version: str
     description: str
 
-    # Database
-    db_async_connection_str: str
+    # Auth
+    auth_host: str
