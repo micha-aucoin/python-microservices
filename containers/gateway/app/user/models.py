@@ -1,13 +1,12 @@
-from pydantic import BaseModel
-
 from app.user.examples import ex_user_create, ex_user_patch, ex_user_read
+from pydantic import BaseModel
 
 
 class UserBase(BaseModel):
     username: str
     full_name: str
     email: str
-    disabled: bool
+    disabled: bool | None = False
 
 
 class UserRead(UserBase):

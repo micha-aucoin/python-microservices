@@ -1,27 +1,11 @@
 FROM python:3-slim-buster
 
-ENV \
-    PYTHONFAULTHANDLER=1 \
-    PYTHONUNBUFFERED=1 \
-    PYTHONHASHSEED=random \
-    PIP_NO_CACHE_DIR=off \
-    PIP_DISABLE_PIP_VERSION_CHECK=on \
-    PIP_DEFAULT_TIMEOUT=100 \
-    POETRY_VERSION=1.4.2 \
-    APP=/gateway
+WORKDIR /gateway
 
-# System deps:
-RUN pip install "poetry==$POETRY_VERSION"
+COPY requirements.txt /auth-app/requirements.txt
 
-# Copy only requirements to cache them in docker layer
-WORKDIR ${APP}
-COPY poetry.lock pyproject.toml ${APP}/
+RUN pip install --no-cache-dir --upgrade -r /auth-app/requirements.txt
 
-# Project initialization:
-RUN poetry config virtualenvs.create false \
-    && poetry install --no-interaction --no-ansi
-
-# Creating folders, and files for a project:
-COPY . ${APP}
+COPY . /gateway
 
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80"]

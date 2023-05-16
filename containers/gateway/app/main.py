@@ -1,9 +1,8 @@
 import uvicorn
-from fastapi import FastAPI
-
 from app import settings
 from app.core.models import HealthCheck
 from app.router.api_v1.endpoints import api_router
+from fastapi import FastAPI
 
 app = FastAPI(
     title=settings.project_name,

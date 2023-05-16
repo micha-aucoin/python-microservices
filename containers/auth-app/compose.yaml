@@ -4,7 +4,7 @@ services:
     image: auth-app
     container_name: auth-app
     env_file:
-      - env/example.env
+      - example.env
     ports:
       - "8080:80"
     networks:

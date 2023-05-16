@@ -1,12 +1,38 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends
+import httpx
+from app import settings
+from app.user.dependencies import get_current_active_user
+from app.user.models import UserCreate, UserRead
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi import status as http_status
 
-from app.user.dependencies import get_current_active_user
-from app.user.models import UserRead
-
 router = APIRouter()
+
+
+@router.post(
+    "",
+    response_model=UserRead,
+    status_code=http_status.HTTP_201_CREATED,
+)
+async def create_user(data: UserCreate):
+    url = f"http://{settings.auth_host}{settings.auth_api_v1_prefix}/users"
+    data = data.json()
+
+    async with httpx.AsyncClient() as client:
+        response = await client.post(
+            url=url,
+            data=data,
+        )
+    if response.status_code == http_status.HTTP_200_OK:
+        user = UserRead(**response.json())
+        return user
+
+    else:
+        raise HTTPException(
+            status_code=response.status_code,
+            detail=response.json(),
+        )
 
 
 @router.get(

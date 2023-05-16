@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gateway-dotenv
+  namespace: gateway
+data:
+  .env: |
+    # BASE
+    API_V1_PREFIX="/api/v1"
+    DEBUG=True
+    PROJECT_NAME="Gateway (local)"
+    VERSION="0.1.0"
+    DESCRIPTION="The API Gateway app."
+
+    # Mongo
+    MONGO_CONNECTION_STR="mongodb://videos-mg-service.test-db/videos"
+
+    # RabbitMQ
+    RABBITMQ_HOST="rabbitmq.rabbitmq"
+
+    # Auth 
+    AUTH_HOST="auth-app-service.auth-app:8080"
+    AUTH_API_V1_PREFIX="/api/v1"

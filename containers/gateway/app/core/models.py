@@ -7,3 +7,12 @@ class HealthCheck(BaseModel):
     name: str
     version: str
     description: str
+
+
+class StatusMessage(BaseModel):
+    status: bool
+    message: str
+
+
+class TokenData(BaseModel):
+    username: str | None = None

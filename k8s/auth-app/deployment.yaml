@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-app
+  namespace: auth-app
+  labels:
+    app: auth-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: auth-app
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 3
+  template:
+    metadata:
+      labels:
+        app: auth-app
+    spec:
+      containers:
+        - name: auth-app
+          image: pychal/auth-app:latest
+          ports:
+            - containerPort: 80
+          resources:
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          volumeMounts:
+            - name: dotenv
+              mountPath: /auth-app/.env
+              subPath: .env
+      volumes:
+        - name: dotenv
+          configMap:
+            name: auth-app-dotenv
