@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: converter-dotenv
+  namespace: converter
+data:
+  .env: |
+    # DATABASE
+    MONGO_CONNECTION_STR="mongodb://mongo-db-service.test-db:27017"
+
+    # QUEUE
+    RABBITMQ_HOST="rabbitmq.rabbitmq"
+    VIDEO_QUEUE="video"
+    MP3_QUEUE="mp3"

@@ -1,7 +1,8 @@
+from fastapi import APIRouter
+
 from app.auth.api import router as auth_router
 from app.user.api import router as user_router
 from app.videos.api import router as video_router
-from fastapi import APIRouter
 
 api_router = APIRouter()
 

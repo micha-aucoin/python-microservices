@@ -2,21 +2,12 @@ import os
 import sys
 import time
 
-import gridfs
 import pika
-from convert import to_mp3
-from pymongo import MongoClient
+from send import email
 from src import settings
 
 
 def main():
-    client = MongoClient(settings.mongo_connection_str)
-    db_videos = client.videos
-    db_mp3s = client.mp3s
-    # gridfs
-    fs_videos = gridfs.GridFS(db_videos)
-    fs_mp3s = gridfs.GridFS(db_mp3s)
-
     # rabbitmq connection
     connection = pika.BlockingConnection(
         pika.ConnectionParameters(host=settings.rabbitmq_host)
@@ -24,14 +15,19 @@ def main():
     channel = connection.channel()
 
     def callback(ch, method, properties, body):
-        err = to_mp3.start(body, fs_videos, fs_mp3s, ch)
-        if err:
+        try:
+            err = email.notification(body.decode())
+            if err:
+                print(f"Error occurred: {err}")
+                ch.basic_nack(delivery_tag=method.delivery_tag)
+            else:
+                ch.basic_ack(delivery_tag=method.delivery_tag)
+        except Exception as e:
+            print(f"Unexpected error occurred: {e}")
             ch.basic_nack(delivery_tag=method.delivery_tag)
-        else:
-            ch.basic_ack(delivery_tag=method.delivery_tag)
 
     channel.basic_consume(
-        queue=settings.video_queue,
+        queue=settings.mp3_queue,
         on_message_callback=callback,
     )
 

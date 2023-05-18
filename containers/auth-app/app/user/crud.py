@@ -1,9 +1,8 @@
+from app.user.models import User, UserCreate, UserPatch
 from fastapi import Depends
 from passlib.context import CryptContext
 from sqlalchemy import delete, select
 from sqlmodel.ext.asyncio.session import AsyncSession
-
-from app.user.models import User, UserCreate, UserPatch
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -26,8 +25,8 @@ class UserCRUD:
 
         return user
 
-    async def get(self, username: str) -> User:
-        statement = select(User).where(User.username == username)
+    async def get(self, email: str) -> User:
+        statement = select(User).where(User.email == email)
         results = await self.session.execute(statement=statement)
         user = results.scalar_one_or_none()  # type: User | None
 

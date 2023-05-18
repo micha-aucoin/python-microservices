@@ -1,6 +1,0 @@
-services:
-  pymongo_db:
-    image: bitnami/mongodb:latest
-    container_name: pymongo_db
-    ports:
-      - "27017:27017"

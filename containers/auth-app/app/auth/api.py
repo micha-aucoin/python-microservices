@@ -1,16 +1,15 @@
 from datetime import timedelta
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException
-from fastapi import status as http_status
-from fastapi.security import OAuth2PasswordRequestForm
-
 from app import settings
 from app.auth.authenticate import authenticate_user, create_access_token, validate_token
 from app.auth.dependencies import get_user_crud
 from app.auth.models import Token
 from app.core.models import TokenData
 from app.user.crud import UserCRUD
+from fastapi import APIRouter, Depends, HTTPException
+from fastapi import status as http_status
+from fastapi.security import OAuth2PasswordRequestForm
 
 router = APIRouter()
 
@@ -39,7 +38,7 @@ async def login(
         minutes=settings.jwt_token_expire_minutes,
     )
     access_token = create_access_token(
-        data={"sub": user.username},
+        data={"sub": user.email},
         expires_delta=access_token_expires,
     )
     return {"access_token": access_token, "token_type": "bearer"}
@@ -51,6 +50,6 @@ async def login(
     status_code=http_status.HTTP_200_OK,
 )
 async def validate(
-    token: Annotated[str, Depends(validate_token)],
+    token_data: Annotated[str, Depends(validate_token)],
 ):
-    return token
+    return token_data

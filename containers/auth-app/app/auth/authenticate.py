@@ -1,14 +1,13 @@
 from datetime import datetime, timedelta
 from typing import Annotated
 
+from app import settings
+from app.core.models import TokenData
+from app.user.crud import UserCRUD, pwd_context
 from fastapi import Depends, HTTPException
 from fastapi import status as http_status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
-
-from app import settings
-from app.core.models import TokenData
-from app.user.crud import UserCRUD, pwd_context
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f".{settings.api_v1_prefix}/auth/token")
 
@@ -18,7 +17,7 @@ async def authenticate_user(
     password: str,
     users: UserCRUD,
 ):
-    user = await users.get(username=username)
+    user = await users.get(email=username)
     if not user:
         return False
     if not pwd_context.verify(password, user.hashed_password):
@@ -63,10 +62,11 @@ async def validate_token(
             settings.jwt_secret,
             algorithms=[settings.jwt_algorithm],
         )
-        username: str = payload.get("sub")
-        if username is None:
+        email: str = payload.get("sub")
+
+        if email is None:
             raise credentials_exception
-        token_data = TokenData(username=username)
+        token_data = TokenData(email=email)
 
     except JWTError:
         raise credentials_exception

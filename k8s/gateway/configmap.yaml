@@ -13,7 +13,7 @@ data:
     DESCRIPTION="The API Gateway app."
 
     # Mongo
-    MONGO_CONNECTION_STR="mongodb://videos-mg-service.test-db/videos"
+    MONGO_CONNECTION_STR="mongodb://mongo-db-service.test-db:27017"
 
     # RabbitMQ
     RABBITMQ_HOST="rabbitmq.rabbitmq"

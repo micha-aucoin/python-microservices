@@ -5,7 +5,7 @@ from app.core.models import TokenData
 from fastapi import HTTPException, UploadFile
 
 
-def upload(f: UploadFile, fs, channel, access: TokenData):
+def upload(f: UploadFile, fs, channel, token_data: TokenData):
     try:
         fid = fs.put(f.file)
     except Exception as err:
@@ -15,7 +15,7 @@ def upload(f: UploadFile, fs, channel, access: TokenData):
     message = {
         "video_fid": str(fid),
         "mp3_fid": None,
-        "username": access.username,
+        "email": token_data.email,
     }
 
     try:

@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: videos-mg
+  name: mongo-db
   namespace: test-db
   labels:
-    app: videos-mg
+    app: mongo-db
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: videos-mg
+      app: mongo-db
   template:
     metadata:
       labels:
-        app: videos-mg
+        app: mongo-db
     spec:
       containers:
-        - name: videos-mg
+        - name: mongo-db
           image: bitnami/mongodb:latest
           resources:
             limits:
@@ -29,11 +29,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: videos-mg-service
+  name: mongo-db-service
   namespace: test-db
 spec:
   selector:
-    app: videos-mg
+    app: mongo-db
   ports:
     - protocol: TCP
       port: 27017

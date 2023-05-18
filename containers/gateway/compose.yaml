@@ -22,8 +22,6 @@ services:
       - "27017:27017"
     networks:
       - gateway
-    environment:
-      - MONGODB_ROOT_PASSWORD=rootpassword
 
   rabbitmq:
     image: rabbitmq:3

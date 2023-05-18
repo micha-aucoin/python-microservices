@@ -1,38 +1,36 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: auth-app
-  namespace: auth-app
+  name: notification
+  namespace: notification
   labels:
-    app: auth-app
+    app: notification
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: auth-app
+      app: notification
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: 3
+      maxSurge: 4
   template:
     metadata:
       labels:
-        app: auth-app
+        app: notification
     spec:
       containers:
-        - name: auth-app
-          image: pychal/auth-app
-          ports:
-            - containerPort: 80
+        - name: notification
+          image: pychal/notification
           resources:
             limits:
               cpu: 500m
               memory: 256Mi
           volumeMounts:
             - name: dotenv
-              mountPath: /auth-app/.env
+              mountPath: /notification/.env
               subPath: .env
       volumes:
         - name: dotenv
           configMap:
-            name: auth-app-dotenv
+            name: notification-dotenv

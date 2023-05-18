@@ -1,15 +1,14 @@
 from typing import Annotated
 
-from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
-from jose import JWTError, jwt
-from sqlalchemy.ext.asyncio import AsyncSession
-
 from app import settings
 from app.core.db import get_async_session
 from app.core.models import TokenData
 from app.user.crud import UserCRUD
 from app.user.models import UserRead
+from fastapi import Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
+from jose import JWTError, jwt
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 async def get_user_crud(
@@ -37,15 +36,15 @@ async def get_current_user(
             settings.jwt_secret,
             algorithms=[settings.jwt_algorithm],
         )
-        username: str = payload.get("sub")
-        if username is None:
+        email: str = payload.get("sub")
+        if email is None:
             raise credentials_exception
-        token_data = TokenData(username=username)
+        token_data = TokenData(email=email)
 
     except JWTError:
         raise credentials_exception
 
-    user = await users.get(username=token_data.username)
+    user = await users.get(email=token_data.email)
     if user is None:
         raise credentials_exception
 

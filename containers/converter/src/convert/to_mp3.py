@@ -6,6 +6,8 @@ import moviepy.editor
 import pika
 from bson.objectid import ObjectId
 
+from src import settings
+
 
 def start(message, fs_videos, fs_mp3s, channel):
     message = json.loads(message)
@@ -36,7 +38,7 @@ def start(message, fs_videos, fs_mp3s, channel):
     try:
         channel.basic_publish(
             exchange="",
-            routing_key=os.environ.get("MP3_QUEUE"),
+            routing_key=settings.mp3_queue,
             body=json.dumps(message),
             properties=pika.BasicProperties(
                 delivery_mode=pika.spec.PERSISTENT_DELIVERY_MODE
