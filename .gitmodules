@@ -4,3 +4,6 @@
 [submodule "containers/convert-vid"]
 	path = containers/convert-vid
 	url = https://github.com/micha-aucoin/convert-vid
+[submodule "containers/gateway"]
+	path = containers/gateway
+	url = https://github.com/micha-aucoin/gateway
