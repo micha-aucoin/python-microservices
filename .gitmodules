@@ -1,3 +1,6 @@
 [submodule "containers/auth-app"]
 	path = containers/auth-app
 	url = https://github.com/micha-aucoin/auth-app
+[submodule "containers/convert-vid"]
+	path = containers/convert-vid
+	url = https://github.com/micha-aucoin/convert-vid
