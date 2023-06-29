@@ -7,3 +7,6 @@
 [submodule "containers/gateway"]
 	path = containers/gateway
 	url = https://github.com/micha-aucoin/gateway
+[submodule "containers/notification"]
+	path = containers/notification
+	url = https://github.com/micha-aucoin/notification
