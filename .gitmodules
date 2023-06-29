@@ -1,0 +1,3 @@
+[submodule "containers/auth-app"]
+	path = containers/auth-app
+	url = https://github.com/micha-aucoin/auth-app
